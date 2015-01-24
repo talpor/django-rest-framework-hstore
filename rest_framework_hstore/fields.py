@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework.fields import WritableField
+from rest_framework.fields import Field
 
 from django_hstore.dict import HStoreDict
 from django_hstore.exceptions import HStoreDictException
@@ -10,7 +10,7 @@ from django_hstore.exceptions import HStoreDictException
 __all__ = ['HStoreField']
 
 
-class HStoreField(WritableField):
+class HStoreField(Field):
     """
     DRF HStore Dictionary Field
     """
@@ -22,7 +22,7 @@ class HStoreField(WritableField):
             self.write_only = True
             self.read_only = True
     
-    def from_native(self, value):
+    def to_internal_value(self, value):
         if value:
             try:
                 return HStoreDict(value)
@@ -31,7 +31,7 @@ class HStoreField(WritableField):
         else:
             return None
 
-    def to_native(self, value):
+    def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
         
